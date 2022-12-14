@@ -16,7 +16,7 @@ from pygcn.models import GCN
 parser = argparse.ArgumentParser()
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='Disables CUDA training.')
-parser.add_argument('--fastmode', action='store_true', default=False,
+parser.add_argument('--fastmode', action='store_true', default=True,
                     help='Validate during training pass.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=200000,
@@ -25,7 +25,7 @@ parser.add_argument('--lr', type=float, default=0.01,
                     help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4,
                     help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=192,
+parser.add_argument('--hidden', type=int, default=256,
                     help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5,
                     help='Dropout rate (1 - keep probability).')
@@ -50,13 +50,13 @@ optimizer = optim.Adam(model.parameters(),
                        lr=args.lr, weight_decay=args.weight_decay)
 
 if args.cuda:
-    model.cuda()
-    features = features.cuda()
-    # adj = adj.cuda()
-    # labels = labels.cuda()
-    idx_train = idx_train.cuda()
-    idx_val = idx_val.cuda()
-    idx_test = idx_test.cuda()
+    model = model.to("cuda:0")
+    features = features.to("cuda:0")
+    adj = adj.to("cuda:0")
+    labels = labels.to("cuda:0")
+    idx_train = idx_train.to("cuda:0")
+    idx_val = idx_val.to("cuda:0")
+    idx_test = idx_test.to("cuda:0")
 
 
 def train(epoch):
